@@ -69,7 +69,7 @@ public class DynmapBlockScanPlugin extends AbstractBlockScanBase
             	processModFile(mid, src);
             }
             catch (UnsupportedOperationException ex) {
-            	logger.warning("jar in jar method found, skipping: " + ex.getMessage());
+            	
             }
         }
     }
@@ -81,19 +81,19 @@ public class DynmapBlockScanPlugin extends AbstractBlockScanBase
     public void serverStarted() {
     }
     public void serverStarting() {
-    	logger.info("buildAssetMap");
+    	
     	buildAssetMap();
-    	logger.info("loadOverrideResources");
+    	
         // Load override resources
     	loadOverrideResources();
-    	logger.info("scan for overrides");
+    	
         // Scan other modules for block overrides
         for (IModInfo mod : ModList.get().getMods()) {
         	loadModuleOverrideResources(mod.getModId());
         }
         Map<String, BlockRecord> blockRecords = new LinkedHashMap<String, BlockRecord>();
 
-    	logger.info("Start processing states");
+    	
 
         // Now process models from block records
         Map<String, BlockModel> models = new LinkedHashMap<String, BlockModel>();
@@ -121,12 +121,12 @@ public class DynmapBlockScanPlugin extends AbstractBlockScanBase
             		case INVISIBLE:
             			uses_nonmodel = true;
             			if (verboselogging)
-            			    logger.info(String.format("%s: Invisible block - nothing to render", rl));
+            			   
             			break;
             		case ENTITYBLOCK_ANIMATED:
             			uses_nonmodel = true;
                         if (verboselogging)
-                   			logger.info(String.format("%s: Animated block - needs to be handled specially", rl));
+                   			
             			break;
 //            		case LIQUID:
 //            			uses_nonmodel = true;
@@ -140,7 +140,7 @@ public class DynmapBlockScanPlugin extends AbstractBlockScanBase
             	continue;
             }
             else if (uses_nonmodel) {
-            	logger.warning(String.format("%s: Block mixes model and nonmodel state handling!", rl));
+            	
             }
             // Generate property value map
             Map<String, List<String>> propMap = buildPropoertyMap(bsc);
@@ -158,8 +158,7 @@ public class DynmapBlockScanPlugin extends AbstractBlockScanBase
                 try {	// Workaround for mods with broken block state logic...
                 	br.lightAttenuation = blkstate.isSolidRender(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) ? 15 : (blkstate.propagatesSkylightDown(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) ? 0 : 1);
                 } catch (Exception x) {
-                	logger.warning(String.format("Exception while checking lighting data for block state: %s", blkstate));
-                	logger.verboseinfo("Exception: " + x.toString());
+                	
                 }
         	}
         	// Build generic block state container for block
@@ -186,14 +185,14 @@ public class DynmapBlockScanPlugin extends AbstractBlockScanBase
             blockRecords.put(rl.toString(), br);
         }
         
-        logger.info("Loading models....");
+     
         loadModels(blockRecords, models);
-        logger.info("Variant models loaded");
+
         // Now, resolve all parent references - load additional models
         resolveParentReferences(models);
-        logger.info("Parent models loaded and resolved");
+
         resolveAllElements(blockRecords, models);
-        logger.info("Elements generated");
+       
         
         publishDynmapModData();
         
